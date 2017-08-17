@@ -1,0 +1,88 @@
+/*
+ * Copyright (C) 2016  Department for Business, Energy and Industrial Strategy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package beis.business.controllers
+
+import javax.inject.{Inject, Named}
+
+import play.api.Logger
+import play.api.libs.json.Json
+import play.api.mvc.{Action, Controller}
+import beis.business.actions.OpportunityAction
+import beis.business.data.OpportunityOps
+import beis.business.models.OpportunityId
+import beis.business.notifications.NotificationService
+import beis.business.restmodels.OpportunitySummary
+
+import scala.concurrent.{ExecutionContext, Future}
+
+class OpportunityController @Inject()(opportunities: OpportunityOps,
+                                      OpportunityAction: OpportunityAction,
+                                      notifications: NotificationService)
+                                     (implicit val ec: ExecutionContext)
+  extends Controller with ControllerUtils {
+
+  def byId(id: OpportunityId) = OpportunityAction(id)(request => Ok(Json.toJson(request.opportunity)))
+
+  def getSummaries = Action.async(opportunities.summaries.map(os => Ok(Json.toJson(os))))
+
+  def getOpenSummaries = Action.async(opportunities.openSummaries.map(os => Ok(Json.toJson(os))))
+
+  def getOpen = Action.async(opportunities.findOpen.map(os => Ok(Json.toJson(os))))
+
+  def updateSummary(id: OpportunityId) = Action.async(parse.json[OpportunitySummary]) { implicit request =>
+    val summary = request.body
+    if (summary.id != id) Future.successful(BadRequest(s"id provided on url was ${id.id}, but does not match id of body: ${summary.id.id}"))
+    else opportunities.updateSummary(request.body).map(_ => NoContent)
+  }
+
+  def publish(id: OpportunityId) = OpportunityAction(id).async { implicit request =>
+    import beis.business.Config.config.beis.{email => emailConfig}
+
+    request.opportunity.publishedAt match {
+      case None => opportunities.publish(id).flatMap {
+        case Some(d) =>
+          val mgrMail = emailConfig.dummymanager
+          notifications.notifyManagerAppPublished(id, emailConfig.replyto, mgrMail).
+            map { em =>
+              if (em.isEmpty) Logger.warn("Failed to find the published opportunity")
+            }.recover {
+            case t =>
+              Logger.error(s"Failed to send email to $mgrMail on an opportunity publishing", t)
+              None
+          }.map { _ => Ok(Json.toJson(d)) }
+
+        case None => Future.successful(NotFound)
+      }
+      case Some(_) => Future.successful(BadRequest(s"Opportunity with id ${id.id} has already been published"))
+    }
+  }
+
+  def duplicate(id: OpportunityId) = Action.async(opportunities.duplicate(id).map(jsonResult(_)))
+
+  def saveDescription(id: OpportunityId, sectionNum: Int) = Action.async(parse.json[String]) { implicit request =>
+    val description = request.body.trim match {
+      case "" => None
+      case s => Some(s)
+    }
+
+    opportunities.saveSectionDescription(id, sectionNum, description).map {
+      case 0 => NotFound
+      case _ => NoContent
+    }
+  }
+}

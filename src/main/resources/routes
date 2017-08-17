@@ -1,0 +1,70 @@
+
+
+GET           /opportunity/open                                      beis.business.controllers.OpportunityController.getOpen
+GET           /opportunity/open/summaries                            beis.business.controllers.OpportunityController.getOpenSummaries
+GET           /opportunity/summaries                                 beis.business.controllers.OpportunityController.getSummaries
+GET           /opportunity/:id                                       beis.business.controllers.OpportunityController.byId(id: OpportunityId)
+PUT           /opportunity/:id/summary                               beis.business.controllers.OpportunityController.updateSummary(id: OpportunityId)
+GET           /opportunity/:id/application_form                      beis.business.controllers.ApplicationFormController.forOpportunity(id: OpportunityId)
+POST          /opportunity/:id/duplicate                             beis.business.controllers.OpportunityController.duplicate(id: OpportunityId)
+POST          /opportunity/:id/publish                               beis.business.controllers.OpportunityController.publish(id: OpportunityId)
+
+POST          /manage/opportunity/:id/description/:sectionNum        beis.business.controllers.OpportunityController.saveDescription(id: OpportunityId, sectionNum:Int)
+
+GET           /application_form/:id                                  beis.business.controllers.ApplicationFormController.byId(id: ApplicationFormId)
+GET           /applications                                          beis.business.controllers.ApplicationController.userApplications
+
+GET           /application_form/:id/application                      beis.business.controllers.ApplicationController.applicationForForm(id: ApplicationFormId)
+
+#change this to PUT
+GET           /application_form/:id/applicationcreate                beis.business.controllers.ApplicationController.applicationForFormCreate(id: ApplicationFormId)
+
+GET           /application/:id                                       beis.business.controllers.ApplicationController.application(id: ApplicationId)
+GET           /application/:id/overview                              beis.business.controllers.ApplicationController.overview(id: ApplicationId)
+GET           /application/:id/detail                                beis.business.controllers.ApplicationController.detail(id: ApplicationId)
+POST          /application/:id/personal-ref                          beis.business.controllers.ApplicationController.savePersonalRef(id: ApplicationId)
+GET           /message/:id/messageboard                              beis.business.controllers.MessageBoardController.byId(id: MessageId)
+GET           /messageboard                                          beis.business.controllers.MessageBoardController.userMessages
+POST          /message/messageboard                                  beis.business.controllers.MessageBoardController.saveMessage
+DELETE        /message/:id/messageboard                              beis.business.controllers.MessageBoardController.delete(id: MessageId)
+
+DELETE        /application/:id                                       beis.business.controllers.ApplicationController.delete(id: ApplicationId)
+DELETE        /application                                           beis.business.controllers.ApplicationController.deleteAll
+
+GET           /application/:id/section/:num                          beis.business.controllers.AppSectionController.get(id: ApplicationId, num:Int)
+GET           /application/:id/section/:num/detail                   beis.business.controllers.AppSectionController.sectionDetail(id: ApplicationId, num:Int)
+POST          /application/:id/section/:num                          beis.business.controllers.AppSectionController.post(id: ApplicationId, num:Int)
+POST          /application/:id/section/:num/complete                 beis.business.controllers.AppSectionController.completeSection(id: ApplicationId, num:Int)
+PUT           /application/:id/section/:num/markNotCompleted         beis.business.controllers.AppSectionController.clearSectionCompletedDate(id: ApplicationId, num:Int)
+
+DELETE        /application/:id/section/:num                          beis.business.controllers.AppSectionController.delete(id: ApplicationId, num:Int)
+GET           /application/:id/sections                              beis.business.controllers.AppSectionController.sections(id: ApplicationId)
+
+POST          /application/:id/section/:num/items                    beis.business.controllers.ItemController.post(id: ApplicationId, num:Int)
+GET           /application/:id/section/:num/item/:itemNum            beis.business.controllers.ItemController.get(id: ApplicationId, num:Int, itemNum:Int)
+PUT           /application/:id/section/:num/item/:itemNum            beis.business.controllers.ItemController.put(id: ApplicationId, num:Int, itemNum:Int)
+DELETE        /application/:id/section/:num/item/:itemNum            beis.business.controllers.ItemController.delete(id: ApplicationId, num:Int, itemNum:Int)
+POST          /application/:id/section/:num/fileitems                beis.business.controllers.ItemController.postFileItem(id: ApplicationId, num:Int)
+
+POST          /application/:id/appstatus                             beis.business.controllers.ApplicationController.saveAppStatus(id: ApplicationId)
+
+
+
+# Submit application
+POST          /application/:id/submit                                beis.business.controllers.ApplicationController.submit(id: ApplicationId)
+
+# utility endpoints for testing
+POST          /reset                                                 beis.business.controllers.UtilityController.reset()
+
+
+###########################
+#BEIS Simple Apps
+GET           /simple_application_form/:id/simpleappcreate           beis.business.controllers.SimpleAppsController.applicationForFormCreate(id: ApplicationFormId)
+POST          /application/:id/submitsimpleform                      beis.business.controllers.SimpleAppsController.submit(id: ApplicationId)
+
+
+
+###########################
+# Health check
+GET           /ping                                                  beis.business.controllers.HealthCheckController.ping()
+GET           /version                                               beis.business.controllers.HealthCheckController.version()

@@ -1,0 +1,18 @@
+@(portFolioMgrName: String,
+  applicantTitle: String,
+  applicantLastName: String,
+  applicantFirstName: String,
+  applicantOrg: String,
+  applicationRefNum: String,
+  opportunityRefNumber: beis.business.models.OpportunityId,
+  opportunityTitle: String,
+  submissionLink: String)
+
+Dear portfolio manager @portFolioMgrName,
+
+This is to let you know that @applicantTitle @applicantLastName of @applicantOrg has submitted an application @applicationRefNum
+for your opportunity @opportunityTitle opportunity reference number @formatId(opportunityRefNumber).
+You can view this application on BEIS @submissionLink.
+
+Kind regards
+BEIS

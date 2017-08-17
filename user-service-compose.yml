@@ -1,0 +1,12 @@
+version: '2'
+services:
+  user:
+    image: beis/beis-business
+#    links:
+#    - mysql
+#    environment:
+#      USER_CACHE_TIMEOUT: 0
+
+    ports:
+     - "9100:9000"
+

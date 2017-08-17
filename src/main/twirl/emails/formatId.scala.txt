@@ -1,0 +1,3 @@
+@(
+    id: beis.business.models.OpportunityId
+) @{f"BEIS ${id.id}%04d"}
