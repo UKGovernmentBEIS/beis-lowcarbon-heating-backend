@@ -30,6 +30,7 @@ import play.api.data.validation.ValidationError
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 
+import beis.business.tables.JsonParseException
 import scala.concurrent.{ExecutionContext, Future}
 
 class MessageBoardTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
@@ -88,3 +89,5 @@ class MessageBoardTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)
 
 }
 case class JsonParseException(method: String, errs: Seq[(JsPath, Seq[ValidationError])]) extends Exception
+case class UniqueKeyException(message:String)  extends Exception
+

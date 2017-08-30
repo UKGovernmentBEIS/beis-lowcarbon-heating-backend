@@ -1,5 +1,9 @@
 
 
+POST          /user/register                                         beis.business.controllers.UserController.register()
+POST          /user/login                                            beis.business.controllers.UserController.login()
+
+
 GET           /opportunity/open                                      beis.business.controllers.OpportunityController.getOpen
 GET           /opportunity/open/summaries                            beis.business.controllers.OpportunityController.getOpenSummaries
 GET           /opportunity/summaries                                 beis.business.controllers.OpportunityController.getSummaries

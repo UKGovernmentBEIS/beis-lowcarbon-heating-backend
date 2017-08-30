@@ -50,4 +50,6 @@ package object controllers extends ValueClassFormats {
   implicit val messageFormat = Json.format[Message]
   implicit val messageRowFormat = Json.format[MessageRow]
 
+  implicit val userRowFormat = Json.format[UserRow]
+
 }
