@@ -31,8 +31,9 @@ import beis.business.models.{ApplicationFormRow, ApplicationId, OpportunityId, O
 import beis.business.tables.JsonParseException
 import play.api.libs.json.{JsArray, JsDefined, JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
 
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Random, Success}
 import play.api.libs.json.Json
+
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.service.notify.{NotificationClientException, SendEmailResponse}
 import uk.gov.service.notify.{NotificationClient, SendEmailResponse}
@@ -232,12 +233,49 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
             val varMap = mp ++ Map("sicknessAbsence.itemNumber" ->
               s"$frontendUrl/application/$sec/${mp.get("sectionId").getOrElse("0")}/downloadfile/$itemnum$filetype")
 
-            EmailId(client.sendEmail(managersicknessabsencetemplateid, managerEmail(varMap), emailbodyParams(varMap), "").getNotificationId.toString)
+            val id = EmailId(client.sendEmail(managersicknessabsencetemplateid, managerEmail(varMap), emailbodyParams(varMap), "").getNotificationId.toString)
+          Future.successful(Option(id))
+
         }
         case Failure(t) => Map()
     }
 
     Future.successful(Option(EmailId("0")))
+  }
+
+
+
+  override  def notifyApplicantForgotPassword(username: String, to: String): Future[Option[NotificationId]]= {
+
+    import Config.config.beis.{email => emailConfig}
+    import Config.config.beis.{forms => BEISServerConfig}
+
+    val applicantforgotpasswordtemplateid = emailConfig.notifyservice.applicantforgotpasswordtemplateid
+
+    def emailbodyParams = {
+
+      val emailSubject = "Forgot password"
+      val frontendUrl = BEISServerConfig.frontendUrl
+      val resetIdentifier = Random.nextInt().abs
+      val resetLink = s"$frontendUrl/reset/$resetIdentifier"
+
+      val m: util.Map[String, String] = Map[String, String](
+        "username" -> username,
+        "resetlink" -> resetLink
+      )
+
+      val params = new util.HashMap[String, String]()
+      params.putAll(m)
+      params
+    }
+
+    val apiKey = emailConfig.notifyservice.apikey
+    val client = new NotificationClient(apiKey)
+
+    //val id = EmailId(client.sendEmail(applicantforgotpasswordtemplateid, to, emailbodyParams, "").getNotificationId.toString)
+    val id = EmailId("test")
+
+    Future.successful(Option(id))
   }
 
 }

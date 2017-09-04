@@ -2,6 +2,7 @@
 
 POST          /user/register                                         beis.business.controllers.UserController.register()
 POST          /user/login                                            beis.business.controllers.UserController.login()
+POST          /user/forgotpassword                                   beis.business.controllers.UserController.forgotPassword()
 
 
 GET           /opportunity/open                                      beis.business.controllers.OpportunityController.getOpen

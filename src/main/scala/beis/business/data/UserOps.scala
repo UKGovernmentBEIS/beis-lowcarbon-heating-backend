@@ -28,6 +28,8 @@ import scala.concurrent.Future
 trait UserOps {
 
   def login(jmsg: JsValue): Future[Option[UserRow]]
-
   def register(jmsg: JsValue): Future[String]
+  def forgotpassword(jmsg: JsValue): Future[String]
+
+
   }

@@ -81,6 +81,27 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
     case ex => Future.failed(ex)
   }
 
+  override def forgotpassword(jmsg: JsValue): Future[String] = db.run{
+
+    val username = (jmsg \ "name").validate[String].getOrElse("NA")
+    val email = (jmsg \ "email").validate[String].getOrElse("NA")
+        userTable.filter(ut => (ut.name === username && ut.email === email)).result.map {
+          os => os.map(u => UserRow(u.id, u.name, u.password, u.email)).head.email
+        }
+  }.recoverWith{
+    case ex: Exception =>
+      val msg = ex.getMessage
+      /** TODO *****
+        * We are sending exception as String which is not
+        * an elegant solution
+        * Need to send a Exception TYPE to frontend
+        * instead of a string
+        */
+      Future.successful(msg)
+    case ex => Future.failed(ex)
+  }
+
+
   def basicAuth(pswd: String) = {
     new String(Base64.getEncoder.encode((pswd).getBytes))
   }

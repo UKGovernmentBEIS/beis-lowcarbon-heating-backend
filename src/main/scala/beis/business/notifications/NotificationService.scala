@@ -45,5 +45,6 @@ trait NotificationService {
   def notifyManagerAppSubmitted(applicationFormId: ApplicationId, from: String, to: String): Future[Option[NotificationId]]
   def notifyManagerAppPublished(id: OpportunityId, from: String, mgrEmail: String): Future[Option[NotificationId]]
   def notifyManagerSimpleFormSubmitted(applicationFormId: ApplicationId, from: String, to: String): Future[Option[NotificationId]]
+  def notifyApplicantForgotPassword(username: String, to: String): Future[Option[NotificationId]]
 
 }
