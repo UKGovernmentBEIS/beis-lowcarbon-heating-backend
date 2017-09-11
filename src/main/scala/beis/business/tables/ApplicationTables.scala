@@ -27,8 +27,8 @@ import play.api.libs.json.JsObject
 import beis.business.controllers.JsonHelpers
 import beis.business.data.{ApplicationDetails, ApplicationOps}
 import beis.business.models._
-import beis.business.restmodels.{Application, ApplicationSection}
-import beis.business.slicks.modules.{ApplicationFormModule, ApplicationModule, OpportunityModule, PgSupport}
+import beis.business.restmodels.{Application, ApplicationSection, User}
+import beis.business.slicks.modules._
 import beis.business.slicks.support.DBBinding
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +38,7 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     with ApplicationModule
     with ApplicationFormModule
     with OpportunityModule
+    with UserModule
     with DBBinding
     with PgSupport {
 
@@ -100,6 +101,11 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
       _ <- applicationTable.delete
     } yield ()
   }
+
+//  def applicantEmailQ(id: Rep[ApplicationId]) =
+//    (applicationTable joinLeft userTable on (_.userId === _.name)).filter(_._1.id === id)
+
+ // val applicantEmailC = Compiled(applicantEmailQ _)
 
   def applicationWithSectionsQ(id: Rep[ApplicationId]) =
     (applicationTable joinLeft applicationSectionTable on (_.id === _.applicationId)).filter(_._1.id === id)
@@ -256,5 +262,12 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
       createApplicationForForm(applicationFormId, userId).map { id => Application(id, applicationFormId, None, userId, AppStatus("In progress"), Seq()) }
   }
 
+//  override def user(applicationId: ApplicationId): Future[Option[User]] = db.run {
+//    applicantEmailC(applicationId).result
+//  }.map { ps =>
+//    val (as, ss) = ps.unzip
+//    ss.flatten.map(u=> User(u.id.id, u.name, u.password, u.email)).headOption
+//
+//  }
 }
 

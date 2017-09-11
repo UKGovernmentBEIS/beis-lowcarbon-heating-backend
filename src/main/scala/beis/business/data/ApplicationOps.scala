@@ -21,7 +21,7 @@ import com.google.inject.ImplementedBy
 import org.joda.time.DateTime
 import play.api.libs.json.JsObject
 import beis.business.models._
-import beis.business.restmodels.Application
+import beis.business.restmodels.{Application,User}
 import beis.business.tables.ApplicationTables
 
 import scala.concurrent.Future
@@ -81,5 +81,7 @@ trait ApplicationOps {
   def updateAppStatus(id: ApplicationId, appStatus: Option[String]): Future[Int]
 
   def createSimpleForm(applicationFormId: ApplicationFormId, userId: UserId): Future[Option[ApplicationRow]]
+
+  //def user(id: ApplicationId): Future[Option[User]]
 
 }

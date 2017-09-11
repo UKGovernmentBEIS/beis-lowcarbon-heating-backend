@@ -30,7 +30,7 @@ import beis.business.actions.ApplicationAction
 import beis.business.data.{ApplicationFormOps, ApplicationOps, OpportunityOps}
 import beis.business.models._
 import beis.business.notifications.NotificationService
-import beis.business.restmodels.ApplicationDetail
+import beis.business.restmodels.{ApplicationDetail, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -101,18 +101,20 @@ class ApplicationController @Inject()(applications: ApplicationOps,
   def submit(id: ApplicationId) = ApplicationAction(id).async { request =>
     val f = for {
       submissionRef <- OptionT(applications.submit(id))
-      _ <- OptionT.liftF(sendSubmissionNotifications(submissionRef))
+      _ <- OptionT.liftF(sendSubmissionNotifications(id, submissionRef))
     } yield submissionRef
 
 
     f.value.map(ref => Ok(JsObject(Seq("applicationRef" -> Json.toJson(ref)))))
   }
 
-  private def sendSubmissionNotifications(submissionRef: SubmittedApplicationRef) = {
+  private def sendSubmissionNotifications(submissionRef: SubmittedApplicationRef, id:ApplicationId) = {
     import Config.config.beis.{email => emailConfig}
 
     val from = emailConfig.replyto
     val to = emailConfig.dummyapplicant
+    //val to = getEmail(id)
+
     val mgrEmail = emailConfig.dummymanager
 
     val fs = Seq(
@@ -126,6 +128,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     }
     Future.sequence(fs).map(_ => ())
   }
+
 
   def savePersonalRef(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
     val newVal = request.body.as[String] match {
@@ -149,6 +152,10 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     }
   }
 
+//  def getEmail(id:ApplicationId) = {
+//    applications.user(id).flatMap (
+//      u => u.getOrElse(User(0, "","","NA")).email)
+//  }
 //  def saveAppMessage(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
 //    val newVal = request.body.as[String] match {
 //      case "" => None

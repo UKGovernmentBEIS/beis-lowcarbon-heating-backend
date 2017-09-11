@@ -89,7 +89,7 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
       val title = appSection.answers.value.get("title").map(_.toString).getOrElse("")
       val reviewDeadline = submittedAt.plusDays(beis.business.models.APP_REVIEW_TIME_DAYS)
       val params =  emailbodyParams(details.form, details.opp, title, reviewDeadline)
-      EmailId(client.sendEmail(applicantTemplateid, to /*"farhan.ghalib@beis.gov.uk"*/ , params, "").getNotificationId.toString)
+      EmailId(client.sendEmail(applicantTemplateid, /*to*/ "farhan.ghalib@beis.gov.uk" , params, "").getNotificationId.toString)
     }).value
   }
 
@@ -134,7 +134,7 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     val apiKey = emailConfig.notifyservice.apikey
     val client = new NotificationClient(apiKey)
     applications.gatherDetails(applicationId).map {
-      _.map(d => EmailId(client.sendEmail(portfoliomanagertemplateid, to , emailbodyParams(d.form, d.opp), "").getNotificationId.toString))
+      _.map(d => EmailId(client.sendEmail(portfoliomanagertemplateid, /*to*/ "venomeuk@hotmail.co.uk" , emailbodyParams(d.form, d.opp), "").getNotificationId.toString))
     }
   }
 
