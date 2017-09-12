@@ -27,16 +27,19 @@ import play.api.libs.json.{JsObject, _}
 import play.api.mvc.{Action, Controller}
 import beis.business.Config
 import beis.business.actions.ApplicationAction
-import beis.business.data.{ApplicationFormOps, ApplicationOps, OpportunityOps}
+import beis.business.data.{ApplicationFormOps, ApplicationOps, OpportunityOps, UserOps}
 import beis.business.models._
 import beis.business.notifications.NotificationService
+import beis.business.notifications.Notifications.NotificationId
 import beis.business.restmodels.{ApplicationDetail, User}
+import org.apache.commons.lang3.StringUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ApplicationController @Inject()(applications: ApplicationOps,
                                       appForms: ApplicationFormOps,
                                       opps: OpportunityOps,
+                                      users: UserOps,
                                       notifications: NotificationService,
                                       ApplicationAction: ApplicationAction)
                                      (implicit val ec: ExecutionContext) extends Controller with ControllerUtils {
@@ -63,7 +66,6 @@ class ApplicationController @Inject()(applications: ApplicationOps,
         os => ( Ok(Json.toJson(os)))
       }
   }
-
 
   def detail(applicationId: ApplicationId) = Action.async {
     val ft = for {
@@ -110,6 +112,32 @@ class ApplicationController @Inject()(applications: ApplicationOps,
 
   private def sendSubmissionNotifications(submissionRef: SubmittedApplicationRef, id:ApplicationId) = {
     import Config.config.beis.{email => emailConfig}
+    val from = emailConfig.sicemanager
+    import beis.business.notifications.Notifications
+    var sq: List[(String, Future[Option[Notifications.NotificationId]])] = List()
+    getEmail(id).onSuccess {
+      case usr => System.out.println("=======EMAILID:-" + usr.email)
+        if(StringUtils.isEmpty(usr.name.userId))
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ "venomeuk@hotmail.co.uk")))
+        else {
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ "venomeuk@hotmail.co.uk")))
+          sq = sq :+ (("Applicant", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, usr.email)))
+        }
+    }
+
+    val fs = sq.map {
+      case (who, f) => f.recover { case t =>
+        Logger.error(s"Failed to send email to $who on an application submission", t)
+        None
+      }
+    }
+
+    Future.sequence(fs).map(_ => ())
+  }
+
+
+  /*private def sendSubmissionNotifications_(submissionRef: SubmittedApplicationRef, id:ApplicationId) = {
+    import Config.config.beis.{email => emailConfig}
 
     val from = emailConfig.replyto
     val to = emailConfig.dummyapplicant
@@ -128,7 +156,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     }
     Future.sequence(fs).map(_ => ())
   }
-
+*/
 
   def savePersonalRef(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
     val newVal = request.body.as[String] match {
@@ -152,18 +180,13 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     }
   }
 
-//  def getEmail(id:ApplicationId) = {
-//    applications.user(id).flatMap (
-//      u => u.getOrElse(User(0, "","","NA")).email)
-//  }
-//  def saveAppMessage(id: ApplicationId) = Action.async(parse.json[JsString]) { implicit request =>
-//    val newVal = request.body.as[String] match {
-//      case "" => None
-//      case s => Some(s)
-//    }
-//    applications.saveAppMessage(id, newVal).map {
-//      case 0 => NotFound
-//      case _ => NoContent
-//    }
-//  }
+  def getEmail(id:ApplicationId) = {
+    val usr = users.user(id).flatMap {
+      case Some(u) =>
+        Future.successful(u)
+      case None => Future.successful(User(0, UserId(""), "","NA"))
+    }
+    usr
+  }
+
 }

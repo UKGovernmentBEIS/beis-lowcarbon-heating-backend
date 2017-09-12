@@ -22,8 +22,8 @@ import javax.inject.Inject
 import beis.business.Config
 import beis.business.restmodels.User
 import beis.business.actions.ApplicationAction
-import beis.business.data.UserOps
-import beis.business.models.{MessageId, SubmittedApplicationRef}
+import beis.business.data.{ApplicationOps, UserOps}
+import beis.business.models.{ApplicationId, MessageId, SubmittedApplicationRef, UserId}
 import beis.business.notifications.NotificationService
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
@@ -32,11 +32,13 @@ import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.{ExecutionContext, Future}
 import beis.business.tables.JsonParseException
+import cats.data.OptionT
 
 /**
   * Created by venkatamutyala on 27/08/2017.
   */
 class UserController @Inject()(users: UserOps,
+                               applications: ApplicationOps,
                                notifications: NotificationService)
                               (implicit val ec: ExecutionContext) extends Controller with ControllerUtils {
 
@@ -73,4 +75,26 @@ class UserController @Inject()(users: UserOps,
         None
       }
   }
+
+//    def getEmail_(id:ApplicationId) = {
+//      val g = users..user(id).flatMap{u=>
+//        u.getOrElse(User(0,UserId(""),"","Na")).email
+//      }
+//      Future.successful(g)
+//    }
+
+//    def getEmail__(id:ApplicationId) = {
+//      val em = for {
+//        usr <- OptionT(users.user(id))
+//      } yield usr.email
+//      em
+//    }
+//
+//    def getEmail(id:ApplicationId) = {
+//      val useEmail = users.user(id).flatMap {
+//          case Some(u) => Future.successful(u.email)
+//        case None => Future.successful("")
+//      }
+//      useEmail
+//    }
 }

@@ -116,7 +116,7 @@ class SimpleAppsController @Inject()(applications: ApplicationOps,
     val mgrEmail = emailConfig.dummymanager
 
     val fs = Seq(
-      ("Manager", notifications.notifyManagerSimpleFormSubmitted(submissionRef, from, to))/*,
+      ("Manager", notifications.notifyApplicantFormSubmitted(submissionRef, "Applicant", from, to))/*,
       ("Applicant", notifications.notifyApplicant(submissionRef, DateTime.now(DateTimeZone.UTC), from, to, mgrEmail))*/
     ).map {
       case (who, f) => f.recover { case t =>

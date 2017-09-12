@@ -22,6 +22,6 @@ import org.joda.time.DateTime
 import play.api.libs.json.JsObject
 
 
-case class User(id: Long, name: String, password: String, email: String)
-case class Login(name: String, password: String)
+case class User(id: Long, name: UserId, password: String, email: String)
+case class Login(name: UserId, password: String)
 //case class MessageSummary(id: MessageId, sentBy: UserId, sentAt: DateTime, message : Option[String])

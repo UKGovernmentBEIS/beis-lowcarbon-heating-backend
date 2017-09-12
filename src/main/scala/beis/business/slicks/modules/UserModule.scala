@@ -22,7 +22,7 @@ import beis.business.slicks.support.DBBinding
 import com.github.tminglei.slickpg.{ExPostgresDriver, PgDateSupportJoda, PgPlayJsonSupport}
 import com.wellfactored.slickgen.IdType
 import org.joda.time.DateTime
-
+import beis.business.slicks.modules._
 import scala.language.implicitConversions
 
 trait UserModule extends PlayJsonMappers {
@@ -32,7 +32,7 @@ trait UserModule extends PlayJsonMappers {
 
   //implicit def ApplicationIdMapper: BaseColumnType[ApplicationId] = MappedColumnType.base[ApplicationId, Long](_.id, ApplicationId)
   implicit def RegUserIdMapper: BaseColumnType[RegUserId] = MappedColumnType.base[RegUserId, Long](_.id, RegUserId)
-  //implicit def ApplicationFormUserIdMapper: BaseColumnType[UserId] = MappedColumnType.base[UserId, String](_.userId, UserId)
+  implicit def ApplicationFormUserIdMapper: BaseColumnType[UserId] = MappedColumnType.base[UserId, String](_.userId, UserId)
 
   type UserQuery = Query[UserTable, UserRow, Seq]
 
@@ -40,7 +40,7 @@ trait UserModule extends PlayJsonMappers {
 
     def id = column[RegUserId]("id", O.Length(IdType.length), O.PrimaryKey, O.AutoInc)
 
-    def name = column[String]("user_name", O.Length(20))
+    def name = column[UserId]("user_name", O.Length(20))
 
     def password = column[String]("password", O.Length(20))
 

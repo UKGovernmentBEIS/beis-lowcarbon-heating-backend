@@ -18,6 +18,7 @@
 package beis.business.data
 
 import beis.business.models._
+import beis.business.restmodels.User
 import beis.business.tables.UserTables
 import com.google.inject.ImplementedBy
 import play.api.libs.json.JsValue
@@ -30,6 +31,6 @@ trait UserOps {
   def login(jmsg: JsValue): Future[Option[UserRow]]
   def register(jmsg: JsValue): Future[String]
   def forgotpassword(jmsg: JsValue): Future[String]
-
+  def user(applicationId: ApplicationId): Future[Option[User]]
 
   }

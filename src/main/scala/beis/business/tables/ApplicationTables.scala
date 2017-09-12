@@ -38,7 +38,7 @@ class ApplicationTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     with ApplicationModule
     with ApplicationFormModule
     with OpportunityModule
-    with UserModule
+    //with UserModule
     with DBBinding
     with PgSupport {
 

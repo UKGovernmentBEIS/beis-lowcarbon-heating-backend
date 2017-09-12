@@ -154,6 +154,9 @@ class NotificationServicePlayImpl @Inject()(sender: MailerClient, applications: 
   def notifyApplicantForgotPassword(username: String, to: String): Future[Option[NotificationId]] ={
     ???
   }
+  def notifyApplicantFormSubmitted(id: ApplicationId, applicant: String, from: String, to: String): Future[Option[NotificationId]] ={
+    ???
+  }
 
 
 }

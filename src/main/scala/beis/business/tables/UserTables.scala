@@ -33,11 +33,13 @@ import beis.business.tables.JsonParseException
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
-  extends UserModule
-    with UserOps
+    extends UserOps
+    with UserModule
+    with OpportunityModule
+    with ApplicationFormModule
+    with ApplicationModule
     with DBBinding
     with PgSupport {
-
 
   implicit val userIdReads = Json.format[UserId]
   implicit val userFormat = Json.format[User]
@@ -45,8 +47,9 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
 
   import api._
 
-  override def login(jmsg: JsValue): Future[Option[UserRow]] = db.run{
+  override implicit def ApplicationFormUserIdMapper: BaseColumnType[UserId] = MappedColumnType.base[UserId, String](_.userId, UserId)
 
+  override def login(jmsg: JsValue): Future[Option[UserRow]] = db.run{
     jmsg.validate[Login] match {
       case JsSuccess(a, _) => {
         userTable.filter(ut => (ut.name === a.name && ut.password === basicAuth(a.password))).result.map {
@@ -59,7 +62,6 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
   }
 
   override def register(jmsg: JsValue): Future[String]  = db.run {
-
     jmsg.validate[User] match {
       case JsSuccess(a, _) =>
         (userTable returning userTable.map(_.password)) += UserRow(RegUserId(0), a.name, basicAuth(a.password), a.email)
@@ -85,7 +87,7 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
 
     val username = (jmsg \ "name").validate[String].getOrElse("NA")
     val email = (jmsg \ "email").validate[String].getOrElse("NA")
-        userTable.filter(ut => (ut.name === username && ut.email === email)).result.map {
+        userTable.filter(ut => (ut.name === UserId(username) && ut.email === email)).result.map {
           os => os.map(u => UserRow(u.id, u.name, u.password, u.email)).head.email
         }
   }.recoverWith{
@@ -101,6 +103,17 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
     case ex => Future.failed(ex)
   }
 
+  def applicantEmailQ(id: Rep[ApplicationId]) =
+      (applicationTable joinLeft userTable on (_.userId === _.name)).filter(_._1.id === id)
+
+  val applicantEmailC = Compiled(applicantEmailQ _)
+
+  override def user(applicationId: ApplicationId): Future[Option[User]] = db.run {
+      applicantEmailC(applicationId).result
+    }.map { ps =>
+      val (as, ss) = ps.unzip
+      ss.flatten.map(u=> User(u.id.id, u.name, u.password, u.email)).headOption
+  }
 
   def basicAuth(pswd: String) = {
     new String(Base64.getEncoder.encode((pswd).getBytes))

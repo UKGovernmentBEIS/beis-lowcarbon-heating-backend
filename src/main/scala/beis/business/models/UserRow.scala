@@ -21,5 +21,5 @@ import org.joda.time.DateTime
 import play.api.libs.json.JsObject
 
 case class RegUserId(id: Long)
-case class UserRow(id: RegUserId, name: String, password: String, email: String)
+case class UserRow(id: RegUserId, name: UserId, password: String, email: String)
 
