@@ -79,6 +79,7 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     ft.value.map(jsonResult(_))
   }
 
+
   val emptyJsObject: JsObject = JsObject(Seq())
 
   /**
@@ -116,11 +117,14 @@ class ApplicationController @Inject()(applications: ApplicationOps,
     import beis.business.notifications.Notifications
     var sq: List[(String, Future[Option[Notifications.NotificationId]])] = List()
     getEmail(id).onSuccess {
-      case usr => System.out.println("=======EMAILID:-" + usr.email)
+
+      case usr => Logger.info(s"Sending email to $usr.email")
         if(StringUtils.isEmpty(usr.name.userId))
-          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ "venomeuk@hotmail.co.uk")))
+          //TODO change it with SICE email
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ usr.email)))
         else {
-          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ "venomeuk@hotmail.co.uk")))
+          //TODO change it with SICE email
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ usr.email)))
           sq = sq :+ (("Applicant", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, usr.email)))
         }
     }
