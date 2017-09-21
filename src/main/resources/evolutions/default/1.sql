@@ -96,8 +96,6 @@ ALTER TABLE "application_form_section" ADD CONSTRAINT "applicationformsection_ap
 ALTER TABLE "application_form" add constraint "application_form_opportunity_fk" foreign key("opportunity_id") references "opportunity"("id") on update NO ACTION on delete CASCADE;
 ALTER TABLE "application_form_question" ADD CONSTRAINT "applicationformquestion_application_form_section_fk" FOREIGN KEY ("application_form_section_id") REFERENCES "application_form_section" ("id") ON UPDATE NO ACTION ON DELETE CASCADE;
 
-
-
 CREATE INDEX application_application_form_idx ON application USING btree (application_form_id);
 CREATE INDEX application_form_opportunity_idx ON application_form USING btree (opportunity_id);
 CREATE INDEX applicationformquestion_application_form_section_idx ON application_form_question USING btree (application_form_section_id);
@@ -107,7 +105,6 @@ CREATE INDEX paragraph_section_idx ON paragraph USING btree (section_id);
 CREATE INDEX section_opportunity_idx ON section USING btree (opportunity_id);
 
 		
-
 
 # --- !Downs
 
