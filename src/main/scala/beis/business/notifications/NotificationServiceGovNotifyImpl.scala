@@ -198,13 +198,15 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     import Config.config.beis.{email => emailConfig}
     import Config.config.beis.{forms => BEISServerConfig}
 
+    System.out.println("username====="+ username)
+    System.out.println("to====="+ to)
     val applicantforgotpasswordtemplateid = emailConfig.notifyservice.applicantforgotpasswordtemplateid
 
     def emailbodyParams = {
       val emailSubject = "Forgot password"
       val frontendUrl = BEISServerConfig.frontendUrl
       val resetIdentifier = Random.nextInt().abs
-      val resetLink = s"$frontendUrl/reset/$resetIdentifier"
+      val resetLink = s"$frontendUrl/resetpassword/$resetIdentifier"
       val m: util.Map[String, String] = Map[String, String](
         "username" -> username,
         "resetlink" -> resetLink
@@ -218,8 +220,8 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     val apiKey = emailConfig.notifyservice.apikey
     val client = new NotificationClient(apiKey)
 
-    //val id = EmailId(client.sendEmail(applicantforgotpasswordtemplateid, to, emailbodyParams, "").getNotificationId.toString)
-    val id = EmailId("test")
+    val id = EmailId(client.sendEmail(applicantforgotpasswordtemplateid, to, emailbodyParams, "").getNotificationId.toString)
+    //val id = EmailId("test")
 
     Future.successful(Option(id))
   }
