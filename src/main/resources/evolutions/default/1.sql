@@ -9,6 +9,7 @@ CREATE SEQUENCE messageboard_id_seq START WITH 1;
 CREATE SEQUENCE application_id_seq START WITH 1;
 CREATE SEQUENCE application_section_id_seq START WITH 1;
 CREATE SEQUENCE user_id_seq START WITH 1;
+CREATE SEQUENCE reset_password_id_seq START WITH 1;
 
 CREATE TABLE "user" (    
     id bigint DEFAULT nextval('user_id_seq'::regclass) NOT NULL PRIMARY KEY,
@@ -84,6 +85,12 @@ CREATE TABLE "application_form_section" (
     title character varying(255) NOT NULL,
     fields jsonb DEFAULT '[]'::jsonb NOT NULL,
     section_type character varying(50) DEFAULT 'form'::character varying NOT NULL
+);
+CREATE TABLE "reset_password" (
+    id bigint DEFAULT nextval('reset_password_id_seq'::regclass) NOT NULL PRIMARY KEY,
+    user_id character varying(50) NOT NULL,
+    ref_no bigint NOT NULL,
+    time_to_lapse timestamp with time zone
 );
 
 ALTER TABLE "user" ADD CONSTRAINT user_user_name_key UNIQUE (user_name);
