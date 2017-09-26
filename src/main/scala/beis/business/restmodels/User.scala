@@ -24,4 +24,6 @@ import play.api.libs.json.JsObject
 
 case class User(id: Long, name: UserId, password: String, email: String)
 case class Login(name: UserId, password: String)
+case class ResetPassword(refno: String, password: String)
+
 //case class MessageSummary(id: MessageId, sentBy: UserId, sentAt: DateTime, message : Option[String])

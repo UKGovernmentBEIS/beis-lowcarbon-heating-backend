@@ -68,6 +68,14 @@ class UserController @Inject()(users: UserOps,
         }
   }
 
+  def resetPassword() = Action.async(parse.json[JsObject]) { implicit request =>
+
+    users.resetpassword(request.body).map {
+      os =>( Ok(Json.toJson(os)))
+    }
+  }
+
+
   private def sendforgotPasswordNotification(username:String, to: String) = {
     import Config.config.beis.{email => emailConfig}
     notifications.notifyApplicantForgotPassword(username, to).recover { case t =>
@@ -75,6 +83,8 @@ class UserController @Inject()(users: UserOps,
         None
       }
   }
+
+
 
 //    def getEmail_(id:ApplicationId) = {
 //      val g = users..user(id).flatMap{u=>

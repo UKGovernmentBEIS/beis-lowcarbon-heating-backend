@@ -22,13 +22,14 @@ import javax.inject.Inject
 
 import beis.business.data.{ApplicationDetails, UserOps}
 import beis.business.models._
-import beis.business.restmodels.{Application, Login, User}
+import beis.business.restmodels.{Application, Login, User, ResetPassword}
 import beis.business.slicks.modules._
 import beis.business.slicks.support.DBBinding
 import play.api.data.validation.ValidationError
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 import beis.business.tables.JsonParseException
+import org.joda.time.DateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,6 +45,7 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
   implicit val userIdReads = Json.format[UserId]
   implicit val userFormat = Json.format[User]
   implicit val loginFormat = Json.format[Login]
+  implicit val resetPasswordFormat = Json.format[ResetPassword]
 
   import api._
 
@@ -103,6 +105,41 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
     case ex => Future.failed(ex)
   }
 
+  override def resetpassword(jmsg: JsValue): Future[String]  = db.run {
+//    System.out.println("111=================="+ jmsg)
+//
+//
+//    //1. Save data in User table
+//    //2. Set a boolean flag to mark as Refno used
+//    //3.
+//
+//    jmsg.validate[ResetPassword] match {
+//      case JsSuccess(a, _) =>
+//        System.out.println("==TODO")
+//        (resetPasswordTable returning resetPasswordTable.map(_.timetolapse)) += UserRow(RegUserId(0), a.name, basicAuth(a.password), a.email)
+//          //Future.successful("TEST")
+//      case JsError(errs) =>
+//        throw JsonParseException("register", errs)
+//    }
+//  }.recoverWith{
+//    case ex: Exception =>
+//    val msg = ex.getMessage
+//      /** TODO *****
+//        * We are sending exception as String which is not
+//        * an elegant solution
+//        * Need to send a Exception TYPE to frontend
+//        * instead of a string
+//        */
+//      //Future.successful(UniqueKeyException(ex.getMessage))
+//      Future.successful(msg)
+//    case ex => Future.failed(ex)
+    ???
+  }
+
+
+
+
+
   def applicantEmailQ(id: Rep[ApplicationId]) =
       (applicationTable joinLeft userTable on (_.userId === _.name)).filter(_._1.id === id)
 
@@ -114,6 +151,23 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
       val (as, ss) = ps.unzip
       ss.flatten.map(u=> User(u.id.id, u.name, u.password, u.email)).headOption
   }
+
+  override def saveResetPasswordRefNo(refno: Long): Unit = db.run {
+    System.out.println("======refno"+ refno)
+        (resetPasswordTable  += ResetPasswordRow(0, UserId("ss"), refno, Some(DateTime.now())))
+  }.recoverWith{
+  case ex: Exception =>
+  val msg = ex.getMessage
+  /** TODO *****
+    * We are sending exception as String which is not
+    * an elegant solution
+    * Need to send a Exception TYPE to frontend
+    * instead of a string
+    */
+  //Future.successful(UniqueKeyException(ex.getMessage))
+    System.out.println("======msg"+ msg)
+  Future.successful(msg)
+}
 
   def basicAuth(pswd: String) = {
     new String(Base64.getEncoder.encode((pswd).getBytes))

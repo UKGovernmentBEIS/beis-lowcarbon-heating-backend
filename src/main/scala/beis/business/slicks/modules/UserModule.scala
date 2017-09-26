@@ -51,4 +51,23 @@ trait UserModule extends PlayJsonMappers {
 
   lazy val userTable = TableQuery[UserTable]
 
+
+  type ResetPasswordQuery = Query[ResetPasswordTable, ResetPasswordRow, Seq]
+
+  class ResetPasswordTable(tag: Tag) extends Table[ResetPasswordRow](tag, "reset_password") {
+
+    def id = column[Long]("id", O.Length(IdType.length), O.PrimaryKey, O.AutoInc)
+
+    def userid = column[UserId]("user_id", O.Length(50))
+
+    def refno = column[Long]("ref_no")
+
+    def timetolapse = column[Option[DateTime]]("time_to_lapse")
+
+    def * = (id, userid, refno, timetolapse) <> ((ResetPasswordRow.apply _).tupled, ResetPasswordRow.unapply)
+  }
+
+  lazy val resetPasswordTable = TableQuery[ResetPasswordTable]
+
+
 }

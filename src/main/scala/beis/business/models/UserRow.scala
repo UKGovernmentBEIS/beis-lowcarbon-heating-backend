@@ -22,4 +22,6 @@ import play.api.libs.json.JsObject
 
 case class RegUserId(id: Long)
 case class UserRow(id: RegUserId, name: UserId, password: String, email: String)
+case class ResetPasswordRow(id: Long, userid: UserId, refno: Long, timetolapse: Option[DateTime])
+//case class ResetPassword(refno: String, password: String)
 

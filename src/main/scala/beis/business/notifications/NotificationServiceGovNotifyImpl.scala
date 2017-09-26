@@ -26,7 +26,7 @@ import cats.data.OptionT
 import cats.instances.future._
 import org.joda.time.DateTime
 import play.api.libs.mailer.MailerClient
-import beis.business.data.{ApplicationOps, OpportunityOps}
+import beis.business.data.{ApplicationOps, OpportunityOps, UserOps}
 import beis.business.models.{ApplicationFormRow, ApplicationId, OpportunityId, OpportunityRow}
 import beis.business.tables.JsonParseException
 import play.api.libs.json.{JsArray, JsDefined, JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
@@ -41,7 +41,7 @@ import uk.gov.service.notify.{NotificationClient, SendEmailResponse}
 import scala.collection.JavaConversions._
 
 
-class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applications: ApplicationOps, opportunities: OpportunityOps)
+class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applications: ApplicationOps, opportunities: OpportunityOps, users: UserOps)
                                                 (implicit ec: ExecutionContext) extends NotificationService {
 
   import Notifications._
@@ -198,8 +198,6 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     import Config.config.beis.{email => emailConfig}
     import Config.config.beis.{forms => BEISServerConfig}
 
-    System.out.println("username====="+ username)
-    System.out.println("to====="+ to)
     val applicantforgotpasswordtemplateid = emailConfig.notifyservice.applicantforgotpasswordtemplateid
 
     def emailbodyParams = {
@@ -211,6 +209,8 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
         "username" -> username,
         "resetlink" -> resetLink
       )
+
+      users.saveResetPasswordRefNo(resetIdentifier)
 
       val params = new util.HashMap[String, String]()
       params.putAll(m)
