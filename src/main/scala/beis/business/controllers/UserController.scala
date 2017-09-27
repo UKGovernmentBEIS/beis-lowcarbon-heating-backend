@@ -84,27 +84,4 @@ class UserController @Inject()(users: UserOps,
       }
   }
 
-
-
-//    def getEmail_(id:ApplicationId) = {
-//      val g = users..user(id).flatMap{u=>
-//        u.getOrElse(User(0,UserId(""),"","Na")).email
-//      }
-//      Future.successful(g)
-//    }
-
-//    def getEmail__(id:ApplicationId) = {
-//      val em = for {
-//        usr <- OptionT(users.user(id))
-//      } yield usr.email
-//      em
-//    }
-//
-//    def getEmail(id:ApplicationId) = {
-//      val useEmail = users.user(id).flatMap {
-//          case Some(u) => Future.successful(u.email)
-//        case None => Future.successful("")
-//      }
-//      useEmail
-//    }
 }

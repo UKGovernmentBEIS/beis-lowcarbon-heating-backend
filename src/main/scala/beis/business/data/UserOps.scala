@@ -32,7 +32,6 @@ trait UserOps {
   def register(jmsg: JsValue): Future[String]
   def forgotpassword(jmsg: JsValue): Future[String]
   def user(applicationId: ApplicationId): Future[Option[User]]
-  def saveResetPasswordRefNo(refno: Long): Unit
-  def resetpassword(jmsg: JsValue): Future[String]
-
+  def saveResetPasswordRefNo(userId: UserId, refno: Long): Unit
+  def resetpassword(jmsg: JsValue): Future[Int]
   }

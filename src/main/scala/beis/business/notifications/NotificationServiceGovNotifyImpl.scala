@@ -27,7 +27,7 @@ import cats.instances.future._
 import org.joda.time.DateTime
 import play.api.libs.mailer.MailerClient
 import beis.business.data.{ApplicationOps, OpportunityOps, UserOps}
-import beis.business.models.{ApplicationFormRow, ApplicationId, OpportunityId, OpportunityRow}
+import beis.business.models._
 import beis.business.tables.JsonParseException
 import play.api.libs.json.{JsArray, JsDefined, JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
 
@@ -210,7 +210,7 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
         "resetlink" -> resetLink
       )
 
-      users.saveResetPasswordRefNo(resetIdentifier)
+      users.saveResetPasswordRefNo(UserId(username), resetIdentifier)
 
       val params = new util.HashMap[String, String]()
       params.putAll(m)

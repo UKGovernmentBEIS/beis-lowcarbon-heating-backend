@@ -90,4 +90,5 @@ class MessageBoardTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)
 }
 case class JsonParseException(method: String, errs: Seq[(JsPath, Seq[ValidationError])]) extends Exception
 case class UniqueKeyException(message:String)  extends Exception
+case class NotfoundException(message:String)  extends Exception
 
