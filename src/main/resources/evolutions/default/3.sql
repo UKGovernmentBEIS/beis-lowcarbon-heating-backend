@@ -8,9 +8,9 @@ The Innovation Fund will consider proposals for low carbon heating systems which
 
 Funding Type: Grant
 
-Application Launch Date: 13th September 2017
+Application Launch Date: 10th October 2017
 
-Application Closing Date:  5pm, 22nd November 2017
+Application Closing Date:  5pm, 2nd January 2018
 
 Grant Size: £200,000 to £2 million 
 
@@ -87,7 +87,7 @@ INSERT INTO section VALUES (3, 3, 1, 'About this form', 'Applicants are required
 •	an explanation of how the project meets the wider objectives of the Innovation Fund
 
 
-Projects must score a minimum of 60% in each question to be considered for funding. For detailed guidance please read the Guidance Notes.', 'no description', NULL, 'text');
+Projects must score a minimum total score of 60% to be considered for funding. For detailed guidance please read the Guidance Notes.', 'no description', NULL, 'text');
 
 # --- !Downs
 DELETE FROM "section";
