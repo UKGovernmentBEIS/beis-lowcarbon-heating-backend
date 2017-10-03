@@ -34,7 +34,7 @@ CREATE SEQUENCE application_section_id_seq START WITH 1;
 CREATE SEQUENCE user_id_seq START WITH 1;
 CREATE SEQUENCE reset_password_id_seq START WITH 1;
 
-CREATE TABLE "user" (    
+CREATE TABLE "user" (
     id bigint DEFAULT nextval('user_id_seq'::regclass) NOT NULL PRIMARY KEY,
     user_name character varying(50) NOT NULL,
     password character varying(50) NOT NULL,
@@ -181,31 +181,31 @@ Application Launch Date: 13th September 2017
 
 Application Closing Date:  5pm, 22nd November 2017
 
-Grant Size: £200,000 to £2 million 
+Grant Size: £200,000 to £2 million
 
-Project Length: To be completed within 3 years 
+Project Length: To be completed within 3 years
 
 
-Before starting an application please read the detailed Guidance Notes. If you have read the Guidance Notes and still have questions, you may address queries to the following email address: BuiltEnvironmentInnovation@beis.gov.uk. 
+Before starting an application please read the detailed Guidance Notes. If you have read the Guidance Notes and still have questions, you may address queries to the following email address: BuiltEnvironmentInnovation@beis.gov.uk.
 
 ', 'no description', NULL, 'text');
 
-INSERT INTO section VALUES (2, 2, 1, 'Key eligibility criteria', 'The lead applicant should complete and submit the application form. Only one proposal per applicant may be submitted.   
+INSERT INTO section VALUES (2, 2, 1, 'Key eligibility criteria', 'The lead applicant should complete and submit the application form. Only one proposal per applicant may be submitted.
 
 As a lead applicant:
 
  • you are responsible for collecting the information for your funding application
 
- • you are responsible for supplying information pertaining to any collaborators 
+ • you are responsible for supplying information pertaining to any collaborators
 
  • your organisation will lead the project if your application is successful
 
 
-Projects will only be considered provided: 
+Projects will only be considered provided:
 
 •	the innovation has the potential to produce better ways of providing low carbon heat in existing buildings
 
-•	the innovation is a technology, process or tool 
+•	the innovation is a technology, process or tool
 
 •	the current TRL of the innovation is a minimum of 6
 
@@ -215,18 +215,18 @@ Projects will only be considered provided:
 
 •	the need for public sector funding is evidenced
 
-•	requested funding is between £200k and £2 million 
+•	requested funding is between £200k and £2 million
 
 •	applicants secure private funding to cover the balance of eligible costs
 
 •	project activities are largely conducted in the UK
 
-•	projects are completed within 3 years of the grant award 
+•	projects are completed within 3 years of the grant award
 
 •	applicants must be financially viable
 
 
-Projects that will not be considered include: 
+Projects that will not be considered include:
 
 •	innovations around biomass systems
 
@@ -237,11 +237,11 @@ Projects that will not be considered include:
 For detailed guidance please read the Guidance Notes.
 ', 'no description', NULL, 'text');
 
-INSERT INTO section VALUES (3, 3, 1, 'About this form', 'Applicants are required to provide: 
+INSERT INTO section VALUES (3, 3, 1, 'About this form', 'Applicants are required to provide:
 
 •	a short public description of the project (not assessed)
 
-•	a full project description 
+•	a full project description
 
 •	detailed cost data to demonstrate how the innovation will reduce the upfront and lifetime costs of delivering low carbon heating
 
@@ -251,7 +251,7 @@ INSERT INTO section VALUES (3, 3, 1, 'About this form', 'Applicants are required
 
 •	a credible approach to project delivery
 
-•	detailed project financing 
+•	detailed project financing
 
 •	an explanation of how the project meets the wider objectives of the Innovation Fund
 

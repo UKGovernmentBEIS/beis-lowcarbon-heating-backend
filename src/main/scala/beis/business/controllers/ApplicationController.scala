@@ -121,10 +121,10 @@ class ApplicationController @Inject()(applications: ApplicationOps,
       case usr => Logger.info(s"Sending email to $usr.email")
         if(StringUtils.isEmpty(usr.name.userId))
           //TODO change it with SICE email
-          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ usr.email)))
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, from)))
         else {
           //TODO change it with SICE email
-          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, /*from*/ usr.email)))
+          sq = sq :+ (("Manager", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, from)))
           sq = sq :+ (("Applicant", notifications.notifyApplicantFormSubmitted(id, usr.name.userId, from, usr.email)))
         }
     }
