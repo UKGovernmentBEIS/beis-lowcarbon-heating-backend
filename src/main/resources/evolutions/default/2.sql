@@ -45,7 +45,7 @@ DELETE FROM  "messageboard";
 DELETE FROM  "paragraph";
 DELETE FROM  "section";
 DELETE FROM  "application_form";
-DELETE FROM  "opportunity";x
+DELETE FROM  "opportunity";
 DELETE FROM  "user";
 
 ALTER SEQUENCE opportunity_id_seq RESTART WITH 1;
