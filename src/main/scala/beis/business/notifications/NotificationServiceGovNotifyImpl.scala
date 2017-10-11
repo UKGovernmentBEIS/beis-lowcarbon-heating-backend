@@ -221,8 +221,6 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     val client = new NotificationClient(apiKey)
 
     val id = EmailId(client.sendEmail(applicantforgotpasswordtemplateid, to, emailbodyParams, "").getNotificationId.toString)
-    //val id = EmailId("test")
-
     Future.successful(Option(id))
   }
 

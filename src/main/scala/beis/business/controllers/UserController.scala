@@ -61,7 +61,7 @@ class UserController @Inject()(users: UserOps,
 
     users.forgotpassword(request.body).map {
           os =>{
-            if(os.indexOf("empty.head") == -1)
+            if(os.equals("success.BF001"))
               sendforgotPasswordNotification(username, email)
             Ok(Json.toJson(os))
           }

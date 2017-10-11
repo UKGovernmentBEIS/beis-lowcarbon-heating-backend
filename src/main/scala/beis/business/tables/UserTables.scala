@@ -31,6 +31,7 @@ import play.api.libs.json._
 import beis.business.tables.JsonParseException
 import org.joda.time.DateTime
 import slick.dbio.DBIOAction
+import org.postgresql.util.PSQLException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,22 +68,25 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
   override def register(jmsg: JsValue): Future[String]  = db.run {
     jmsg.validate[User] match {
       case JsSuccess(a, _) =>
-        (userTable returning userTable.map(_.password)) += UserRow(RegUserId(0), a.name, basicAuth(a.password), a.email)
+        (userTable += UserRow(RegUserId(0), a.name, basicAuth(a.password), a.email)).map(a=> "success.BF001")
 
       case JsError(errs) =>
         throw JsonParseException("register", errs)
     }
   }.recoverWith{
-    case ex: Exception =>
-    val msg = ex.getMessage
-      /** TODO *****
-        * We are sending exception as String which is not
-        * an elegant solution
-        * Need to send a Exception TYPE to frontend
-        * instead of a string
-        */
-      //Future.successful(UniqueKeyException(ex.getMessage))
-      Future.successful(msg)
+
+    case ex: PSQLException => {
+      val errCodeDupicateKey =  "error.BF008"
+      val errCode =  "error.BF009"
+      if(ex.getMessage.indexOf("ERROR: duplicate key value violates unique constraint") != -1)
+        Future.successful(errCodeDupicateKey)
+      else
+        Future.successful(errCode)
+    }
+    case ex: Exception => {
+      val errCode = "error.BF009"
+      Future.successful(errCode)
+    }
     case ex => Future.failed(ex)
   }
 
@@ -91,23 +95,15 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
     val username = (jmsg \ "name").validate[String].getOrElse("NA")
     val email = (jmsg \ "email").validate[String].getOrElse("NA")
 
-    //TODO:- change this code, We only require whether the 2 values are in the database or not
-        userTable.filter(ut => (ut.name === UserId(username) && ut.email === email)).result.map {
-          os => os.map(u => UserRow(u.id, u.name, u.password, u.email)).head.email //this line not required
+    userTable.filter(ut => (ut.name === UserId(username) && ut.email === email)).result.map {
+        d => {
+          if (d.isEmpty)
+            "error.BF006"
+          else
+            "success.BF001"
         }
-  }.recoverWith{
-    case ex: Exception =>
-      val msg = ex.getMessage
-      /** TODO *****
-        * We are sending exception as String which is not
-        * an elegant solution
-        * Need to send a Exception TYPE to frontend
-        * instead of a string
-        */
-      Future.successful(msg)
-    case ex => Future.failed(ex)
+    }
   }
-
 
   override def resetpassword(jmsg: JsValue): Future[Int] = {
 
@@ -115,7 +111,6 @@ class UserTables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(implici
       case JsSuccess(a, _) => {
         db.run(resetPasswordTable.filter(ut => (ut.refno === a.refno.toLong)).result.headOption).flatMap {
           case None =>
-           // throw NotfoundException("No record found")
             Future(0)
           case Some(l) =>
             db.run(userTable.filter(_.name === l.userid).map(_.password).update(basicAuth(a.password)))
