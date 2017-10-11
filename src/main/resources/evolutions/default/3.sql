@@ -8,7 +8,7 @@ The Innovation Fund will consider proposals for low carbon heating systems which
 
 Funding Type: Grant
 
-Application Launch Date: 10th October 2017
+Application Launch Date: 12th October 2017
 
 Application Closing Date:  5pm, 2nd January 2018
 
