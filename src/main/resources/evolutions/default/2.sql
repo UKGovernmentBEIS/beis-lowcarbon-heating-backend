@@ -1,6 +1,6 @@
 # --- !Ups
 
-INSERT INTO opportunity (id, title, start_date, value, value_units, end_date, published_at_dtime, duplicated_from_id) VALUES (1, 'Low Carbon Heating Technology Innovation Fund', '12 October 2018', 2000000.00, 'maximum', NULL, '2017-09-30 17:00:00-08', NULL);
+INSERT INTO opportunity (id, title, start_date, value, value_units, end_date, published_at_dtime, duplicated_from_id) VALUES (1, 'Low Carbon Heating Technology Innovation Fund', '12 October 2017', 2000000.00, 'maximum', NULL, '2017-09-30 17:00:00-08', NULL);
 INSERT INTO application_form (id, opportunity_id) VALUES (1, 1);
 
 
