@@ -76,7 +76,6 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     import Config.config.beis.{email => emailConfig}
 
     val applicantTemplateid = emailConfig.notifyservice.applicanttemplateid
-    val workflowtesttemplateid = emailConfig.notifyservice.workflowtesttemplateid
 
     val apiKey = emailConfig.notifyservice.apikey
     val client = new NotificationClient(apiKey)
@@ -129,7 +128,6 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     import Config.config.beis.{email => emailConfig}
 
     val portfoliomanagertemplateid = emailConfig.notifyservice.manageroppsubmittedtemplateid
-    val workflowtesttemplateid = emailConfig.notifyservice.workflowtesttemplateid
 
     val apiKey = emailConfig.notifyservice.apikey
     val client = new NotificationClient(apiKey)
@@ -158,7 +156,6 @@ class NotificationServiceGovNotifyImpl @Inject()(sender: MailerClient, applicati
     import Config.config.beis.{email => emailConfig}
 
     val portfoliomanagertemplateid = emailConfig.notifyservice.manageropppublishedtemplateid
-    val workflowtesttemplateid = emailConfig.notifyservice.workflowtesttemplateid
 
     val apiKey = emailConfig.notifyservice.apikey
     val client = new NotificationClient(apiKey)

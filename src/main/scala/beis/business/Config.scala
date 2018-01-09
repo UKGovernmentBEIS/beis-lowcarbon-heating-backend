@@ -22,7 +22,7 @@ case class Config(beis: BEISConfig)
 case class BEISConfig(email: EmailConfig, forms: BEISServerConfig)
 
 case class NotifyConfig(apikey: String, applicanttemplateid: String, manageroppsubmittedtemplateid: String,
-                        manageropppublishedtemplateid: String, workflowtesttemplateid: String,
+                        manageropppublishedtemplateid: String,
                         applicantlowcarbonheatingtemplateid: String, applicantforgotpasswordtemplateid: String)
 
 case class EmailConfig(dummyapplicant: String, replyto: String, dummymanager: String, sicemanager: String,
